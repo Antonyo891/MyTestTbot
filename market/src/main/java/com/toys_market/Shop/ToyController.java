@@ -51,6 +51,12 @@ public class ToyController {
         "are not in the store");
     }
 
+    public void RemoveToy(Integer toyId){
+        if (!this.toys.removeIf(e->e.getToyId()==toyId))
+            throw new ToyExeption("Toys with ID" + toyId + 
+        "are not in the store");
+    }
+
     public PriorityQueue<Toy> getToys() {
         return this.toys;
     }
