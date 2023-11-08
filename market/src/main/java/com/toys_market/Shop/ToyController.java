@@ -23,30 +23,52 @@ public class ToyController {
         return toyId;
     }
 
-    public void CreatedToy(String toyName, Integer frequency){
+    public void CreatedToy(String toyName, Integer frequency, Integer amount){
         Integer toyId= GetId();
         if ((frequency<0)||(frequency>100))
             throw new ToyFrequencyExeption(
                 "Invalid frequency value - " + frequency + 
+                "of the " + toyName +
                 "A value >" + 
                 "0 and less than 100 is allowed", frequency);
-        Toy toy = new Toy(toyId, frequency, toyName);
-        this.toys.add(toy); 
+        if (amount<=0) 
+            throw new ToyExeption("The number of toys must be more than 0");
+        Toy toy = new Toy(toyId, frequency, toyName,amount);
+        AddToy(toy); 
     }
 
     public void AddToy(Toy toy){
-        this.toys.add(toy);
+        if (this.toys.contains(toy))
+            for (Toy item:this.toys)
+                if (item.equals(toy)){
+                    item.setAmount(item.getAmount()+toy.getAmount());
+                    System.out.println("Add "+ 
+                    toy.getAmount() +" "+ toy.getToyName() + ". ");
+                }
+        else {
+            CreatedToy(toy.getToyName(),
+                toy.getFrequency(),toy.getAmount());
+            System.out.println(toy.getToyName() + "add to the shop.");
+        }
     }
 
     public void AddToys(Collection<Toy> toys){
-        this.toys.addAll(toys);
+        for (Toy item: toys)
+            AddToy(item);
     }
 
     public Toy GetToy(Integer toyId){
-        //Toy toy;
         for (Toy item: this.toys)
-            if (item.getToyId()==toyId)
-                return item;
+            if (item.getToyId()==toyId) {
+                item.setAmount(item.getAmount()-1);
+                //Toy toy = item;
+                if (item.getAmount()==0) {
+                    System.out.println("The " + item.getToyName()+ 
+                    " are out");
+                    RemoveToy(toyId);
+                    return item;}
+                else return item;
+            }
         throw new ToyExeption("Toys with ID" + toyId + 
         "are not in the store");
     }

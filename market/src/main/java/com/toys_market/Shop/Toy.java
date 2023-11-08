@@ -3,14 +3,16 @@ package com.toys_market.Shop;
  * Toy for shop
  */
 public class Toy implements Comparable<Toy> {
-    private Integer toyId,frequency;
+    private Integer toyId,frequency,amount;
     private String toyName;
 
 
-    public Toy(Integer toyId, Integer frequency, String toyName) {
+    public Toy(Integer toyId, Integer frequency, 
+            String toyName,Integer amount) {
         this.toyId = toyId;
         this.frequency = frequency;
         this.toyName = toyName;
+        this.amount = amount;
     }
 
 
@@ -38,24 +40,33 @@ public class Toy implements Comparable<Toy> {
         this.toyName = toyName;
     }
 
+    public Integer getAmount() {
+        return this.amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
     @Override
     public int compareTo(Toy o) {
-        /* if (this.frequency< o.getFrequency())
-            return -1;
-        if (this.frequency== o.getFrequency())
-            return 0;
-        if (this.frequency> o.getFrequency())
-            return 1; */
         return Integer.compare(this.frequency, o.getFrequency());        
     }
 
     @Override
+    public boolean equals(Object o){
+        Toy toy = (Toy) o;
+        return ((this.toyName.equalsIgnoreCase(toy.toyName))&&
+        (this.frequency==toy.frequency));
+    } 
+
+    @Override
     public String toString() {
         return "{" +
-            " toyId='" + getToyId() + "'" +
-            ", frequency='" + getFrequency() + "'" +
-            ", toyName='" + getToyName() + "'" +
-            "}";
+            " toyId ='" + getToyId() + "'" +
+            ", frequency ='" + getFrequency() + "'" +
+            ", toyName ='" + getToyName() + "'" +
+            ", amount ='" + getAmount() + "'" +"}";
     }
 
 
