@@ -1,9 +1,9 @@
 package com.toys_market.FileWork;
 
-import java.util.Collection;
+import com.toys_market.Shop.ToyController;
 
-public interface FileWork {
+public interface FileWork<T extends ToyController> {
     
-    public Object ReadFile();
-    public void WriteFile(Collection<Object> o);
+    public T ReadFile(String fileName);
+    public void WriteFile(String fileName, T toys);
 }

@@ -1,24 +1,37 @@
 package com.toys_market.FileWork;
 
-import java.util.Collection;
-import java.util.PriorityQueue;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import com.google.gson.Gson;
-import com.toys_market.Shop.Toy;
+import com.toys_market.Shop.ToyController;
 
 public class JsonFileWork implements FileWork {
+    Gson gson;
 
     @Override
-    public Gson ReadFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReadFile'");
+    public ToyController ReadFile(String fileName) {
+        gson = new Gson();
+        try(FileReader reader = new FileReader(fileName)) {
+            ToyController toys = gson.fromJson(reader, ToyController.class);
+            System.out.println("Data was successfully downloaded to the "+ fileName);
+            return toys;
+        } catch (IOException e) {
+            System.out.println("Loading exception");
+        }
+        return null;
     }
 
     @Override
-    public void WriteFile(Collection<Object> o) {
-        PriorityQueue <Toy> toys= (PriorityQueue) o;
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'WriteFile'");
+    public void WriteFile(String fileName, ToyController toys) {
+        gson = new Gson();
+        try(FileWriter writer = new FileWriter(fileName)) {
+            writer.write(gson.toJson(toys));
+            System.out.println("Data was successfully written to the "+ fileName);
+        } catch (IOException e) {
+            System.out.println("Loading exception");
+        }
     }
     
 }

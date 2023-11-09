@@ -15,6 +15,11 @@ public class Toy implements Comparable<Toy> {
         this.amount = amount;
     }
 
+    public Toy(Integer frequency, 
+            String toyName,Integer amount) {
+        this(null,frequency, toyName, amount);
+    }
+
 
     public Integer getToyId() {
         return this.toyId;

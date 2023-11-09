@@ -15,16 +15,15 @@ public class ToyController {
     private Integer GetId(){
         if (this.toys==null)
             return 1;
-        Integer toyId = 0;
+        Integer toyId = 1;
         for (Toy items:this.toys){
             if (toyId <= items.getToyId())
-                toyId=items.getToyId();
+                toyId=items.getToyId()+1;
         }
         return toyId;
     }
 
     public void CreatedToy(String toyName, Integer frequency, Integer amount){
-        Integer toyId= GetId();
         if ((frequency<0)||(frequency>100))
             throw new ToyFrequencyExeption(
                 "Invalid frequency value - " + frequency + 
@@ -33,30 +32,40 @@ public class ToyController {
                 "0 and less than 100 is allowed", frequency);
         if (amount<=0) 
             throw new ToyExeption("The number of toys must be more than 0");
-        Toy toy = new Toy(toyId, frequency, toyName,amount);
-        AddToy(toy); 
+        boolean toyInShop = false;
+        for (Toy item:this.toys){
+            if ((item.getToyName().equalsIgnoreCase(toyName))&&
+            (item.getFrequency()==frequency)) {
+                item.setAmount(item.getAmount()+amount);
+                System.out.println("Add "+ 
+                amount +" "+ item.getToyName() + ". ");
+                toyInShop = true;
+            }
+        }
+        if (!toyInShop){
+            this.toys.add(new Toy(this.GetId(),frequency,toyName, amount));
+            System.out.println(toyName + " add to the shop.");
+        } 
+    }
+
+    public void LoadToys(Collection<Toy> toys){
+        for (Toy item:toys)
+            this.toys.add(item);
     }
 
     public void AddToy(Toy toy){
-        if (this.toys.contains(toy))
-            for (Toy item:this.toys)
-                if (item.equals(toy)){
-                    item.setAmount(item.getAmount()+toy.getAmount());
-                    System.out.println("Add "+ 
-                    toy.getAmount() +" "+ toy.getToyName() + ". ");
-                }
-        else {
-            CreatedToy(toy.getToyName(),
-                toy.getFrequency(),toy.getAmount());
-            System.out.println(toy.getToyName() + "add to the shop.");
+        CreatedToy(toy.getToyName(), toy.getFrequency(), toy.getAmount());
         }
-    }
 
     public void AddToys(Collection<Toy> toys){
         for (Toy item: toys)
             AddToy(item);
     }
-
+    /**
+     * Return Toy by ToyID
+     * @param toyId ToyId
+     * @return Toy
+     */
     public Toy GetToy(Integer toyId){
         for (Toy item: this.toys)
             if (item.getToyId()==toyId) {
@@ -72,11 +81,13 @@ public class ToyController {
         throw new ToyExeption("Toys with ID" + toyId + 
         "are not in the store");
     }
-
+    /**
+     * Remove toy by ToyId
+     */
     public void RemoveToy(Integer toyId){
         if (!this.toys.removeIf(e->e.getToyId()==toyId))
-            throw new ToyExeption("Toys with ID" + toyId + 
-        "are not in the store");
+            throw new ToyExeption("Toys with ID " + toyId + 
+        " are not in the store");
     }
 
     public PriorityQueue<Toy> getToys() {
@@ -86,5 +97,13 @@ public class ToyController {
     public void setToys(Collection<Toy> toys) {
         this.toys = new PriorityQueue<>(toys);
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " toys='" + getToys() + "'" +
+            "}";
+    }
+
       
 }
