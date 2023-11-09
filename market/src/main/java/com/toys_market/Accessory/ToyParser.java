@@ -13,7 +13,8 @@ public class ToyParser {
         String toyName;
         Integer frequency = null;
         Integer amount = null;
-        if (string.split(" ").length!=3)
+        int length = string.split(" ").length;
+        if (length!=3)
             throw new ToyParseException("Incorrect amount of data entered");
         this.list = string.split(" ", 0);
         toyName = list[0];

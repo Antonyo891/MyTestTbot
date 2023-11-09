@@ -4,22 +4,23 @@ import java.util.ArrayList;
 
 import com.toys_market.Accessory.ToyParser;
 import com.toys_market.Accessory.ToysRandom;
-import com.toys_market.Exeption.ToyFrequencyException;
 import com.toys_market.Exeption.ToyParseException;
+import com.toys_market.FileWork.FileWork;
 import com.toys_market.FileWork.JsonFileWork;
 import com.toys_market.Shop.Toy;
 import com.toys_market.Shop.ToyController;
 import com.toys_market.View.ConsoleView;
+import com.toys_market.View.View;
 
 public class PresenterConsole {
-    private ConsoleView view;
+    private View view;
     private ToyController toys;
     private ToyController wonToys;
-    private JsonFileWork fileWork;
+    private FileWork fileWork;
     private ToysRandom toysRandom;
 
 
-    public PresenterConsole(ConsoleView view, JsonFileWork fileWork, ToysRandom toysRandom) {
+    public PresenterConsole(View view, FileWork fileWork, ToysRandom toysRandom) {
         this.view = view;
         this.fileWork = fileWork;
         this.toysRandom = toysRandom;
@@ -109,6 +110,14 @@ public class PresenterConsole {
         view.Set("You are win " + wonToy.getToyName() + ".");
         this.wonToys.AddToy(wonToy);
 
+    }
+
+    public ToyController getToys() {
+        return this.toys;
+    }
+
+    public ToyController getWonToys() {
+        return this.wonToys;
     }
 
 }

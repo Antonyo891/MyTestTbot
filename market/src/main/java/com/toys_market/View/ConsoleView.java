@@ -10,7 +10,7 @@ public class ConsoleView implements View{
  */
     @Override
     public String Get() {
-        return in.next();
+        return in.nextLine();
     }
 
     @Override
