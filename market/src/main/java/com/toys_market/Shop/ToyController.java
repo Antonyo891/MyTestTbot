@@ -2,8 +2,8 @@ package com.toys_market.Shop;
 import java.util.Collection;
 import java.util.PriorityQueue;
 
-import com.toys_market.Exeption.ToyExeption;
-import com.toys_market.Exeption.ToyFrequencyExeption;
+import com.toys_market.Exeption.ToyException;
+import com.toys_market.Exeption.ToyFrequencyException;
 
 public class ToyController {
     private PriorityQueue<Toy> toys;
@@ -25,13 +25,13 @@ public class ToyController {
 
     public void CreatedToy(String toyName, Integer frequency, Integer amount){
         if ((frequency<0)||(frequency>100))
-            throw new ToyFrequencyExeption(
+            throw new ToyFrequencyException(
                 "Invalid frequency value - " + frequency + 
                 "of the " + toyName +
                 "A value >" + 
                 "0 and less than 100 is allowed", frequency);
         if (amount<=0) 
-            throw new ToyExeption("The number of toys must be more than 0");
+            throw new ToyException("The number of toys must be more than 0");
         boolean toyInShop = false;
         for (Toy item:this.toys){
             if ((item.getToyName().equalsIgnoreCase(toyName))&&
@@ -46,11 +46,6 @@ public class ToyController {
             this.toys.add(new Toy(this.GetId(),frequency,toyName, amount));
             System.out.println(toyName + " add to the shop.");
         } 
-    }
-
-    public void LoadToys(Collection<Toy> toys){
-        for (Toy item:toys)
-            this.toys.add(item);
     }
 
     public void AddToy(Toy toy){
@@ -78,15 +73,24 @@ public class ToyController {
                     return item;}
                 else return item;
             }
-        throw new ToyExeption("Toys with ID" + toyId + 
+        throw new ToyException("Toys with ID" + toyId + 
         "are not in the store");
     }
     /**
      * Remove toy by ToyId
      */
+    
+    public Toy SearchToy(Integer toyId){
+        for (Toy item: this.toys)
+            if (item.getToyId()==toyId)
+                    return item;
+        throw new ToyException("Toys with ID" + toyId + 
+        "are not in the store");
+    }
+
     public void RemoveToy(Integer toyId){
         if (!this.toys.removeIf(e->e.getToyId()==toyId))
-            throw new ToyExeption("Toys with ID " + toyId + 
+            throw new ToyException("Toys with ID " + toyId + 
         " are not in the store");
     }
 

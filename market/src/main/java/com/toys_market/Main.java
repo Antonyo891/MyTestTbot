@@ -24,7 +24,6 @@ import com.toys_market.Shop.ToyController;
 
 public class Main {
     public static void main(String[] args) {
-        //Collection<Toy> toysy;
         ToyController toys = new ToyController();
         Toy toy = new Toy(5, "Cat",3);
         Toy toy1 = new Toy(5, "Dog",3);
@@ -40,12 +39,12 @@ public class Main {
         toys.AddToy(toy4);
         System.out.println(toys);
         JsonFileWork fileWork = new JsonFileWork();
-        fileWork.WriteFile("ToysStore.json", toys);
         ToyController toysLoad = fileWork.ReadFile("ToysStore.json");
         System.out.println("--------------------");
-        System.out.println(toysLoad);
-        toysLoad.RemoveToy(3);
-        fileWork.WriteFile("ToysStore.json", toysLoad);
+        toys.AddToys(toysLoad.getToys());
+        System.out.println(toys);
+        fileWork.WriteFile("ToysStore.json", toys);
+
        
 }
 }

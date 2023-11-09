@@ -8,7 +8,7 @@ public class ToysRandom implements Lototron<Toy> {
 
     @Override
     public Integer GetRandom(Collection<Toy> collection) {
-        Integer toyId=null, numberOfItem;
+        Integer numberOfItem;
         Integer[] toysId, toysFrequency;
         String[] toysName;
         numberOfItem = collection.size();
@@ -26,17 +26,13 @@ public class ToysRandom implements Lototron<Toy> {
         for (Integer item: toysFrequency)
             summ+=item;
         int randomNumber = new Random().nextInt(summ);
-        boolean temp = true;
         i=0;
-        while (temp) {
- /*            System.out.println("От " + (summ-toysFrequency[i]) +
-            " до " + summ); */
+        while (true) {
         if ((randomNumber>=summ-toysFrequency[i])&&(randomNumber<summ))
             return toysId[i];
         summ-=toysFrequency[i];    
         i++;
-        }
-        return toyId;    
+        }   
         }
     }
     

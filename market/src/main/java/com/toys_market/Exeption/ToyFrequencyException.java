@@ -1,13 +1,13 @@
 package com.toys_market.Exeption;
 
-public class ToyFrequencyExeption extends ToyExeption {
+public class ToyFrequencyException extends ToyException {
 
     private Integer frequency;
     /**
      * Invalid value of frequency
      * @param message Output message
      */
-    public ToyFrequencyExeption(String message, Integer frequency) {
+    public ToyFrequencyException(String message, Integer frequency) {
         super(message);
         this.frequency = frequency;
     }
