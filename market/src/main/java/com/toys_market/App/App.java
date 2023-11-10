@@ -1,4 +1,4 @@
-package com.toys_market;
+package com.toys_market.App;
 
 import com.toys_market.Accessory.ToysRandom;
 import com.toys_market.Presenter.PresenterConsole;
