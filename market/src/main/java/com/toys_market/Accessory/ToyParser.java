@@ -21,12 +21,12 @@ public class ToyParser {
         try {
             frequency = Integer.parseInt(list[1]);
         } catch (RuntimeException e) {
-            System.out.println("The frequency entered is incorrect");
+            throw new ToyParseException("The frequency entered is incorrect");
         }
         try {
             amount = Integer.parseInt(list[2]);
         } catch (RuntimeException e) {
-            System.out.println("The amount enteed incorrect");
+           throw new ToyParseException("The amount entered incorrect");
         }
         return new Toy(frequency,toyName,amount);
     }

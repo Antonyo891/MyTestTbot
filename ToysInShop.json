@@ -1,1 +1,1 @@
-null
+{"toys":[{"toyId":4,"frequency":5,"amount":2,"toyName":"Totoro"},{"toyId":6,"frequency":10,"amount":10,"toyName":"Avocado"},{"toyId":7,"frequency":10,"amount":19,"toyName":"Duck"},{"toyId":1,"frequency":50,"amount":3,"toyName":"Dog"},{"toyId":8,"frequency":100,"amount":9,"toyName":"Cat"},{"toyId":9,"frequency":50,"amount":1,"toyName":"Frog"},{"toyId":10,"frequency":10,"amount":10,"toyName":"Car"}]}

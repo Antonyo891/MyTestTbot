@@ -1,25 +1,20 @@
 package com.toys_market;
 
 import com.toys_market.Accessory.ToysRandom;
-import com.toys_market.FileWork.FileWork;
-import com.toys_market.FileWork.JsonFileWork;
 import com.toys_market.Presenter.PresenterConsole;
-import com.toys_market.Shop.ToyController;
 import com.toys_market.View.ConsoleView;
 import com.toys_market.View.View;
 
 public class App {
     View view;
-    FileWork<ToyController> fileWork;
     ToysRandom toysRandom;
     PresenterConsole presenter;
 
 
     public App() {
         this.view = new ConsoleView();
-        this.fileWork = new JsonFileWork();
         this.toysRandom = new ToysRandom();
-        this.presenter = new PresenterConsole(this.view, this.fileWork, this.toysRandom);
+        this.presenter = new PresenterConsole(this.view, this.toysRandom);
     }
 
     public void ShowMenu(){
@@ -35,7 +30,8 @@ public class App {
 
     public void Start(){
         presenter.LoadToys();
-        while (true) {
+        boolean work = true;
+        while (work) {
             ShowMenu();
             view.Set("Enter number of required action");
             try {
@@ -43,27 +39,29 @@ public class App {
                 switch (choise) {
                     case 1:
                         presenter.CreateToy();
-                        //break;
+                        break;
                     case 2:
                         presenter.RemoveToy();
-                       //break;
+                       break;
                     case 3:
                         presenter.EditFrequencyToy();
-                        //break;
+                        break;
                     case 4:
                         presenter.PlayToy();
-                        //break;
+                        break;
                     case 5:
-                        presenter.getWonToys();
-                        //break;
+                        view.Set(presenter.getWonToys().toString());
+                        break;
                     case 6:
-                        presenter.getToys();
-                        //break;
+                        view.Set(presenter.getShopToys().toString());
+                        break;
                     case 7:
                         presenter.SaveToys();
+                        work = false;
                         break;
                     default:
                         view.Set("Enter number from 1 to 7");
+                        break;
                 }
                 
             } catch (RuntimeException e) {

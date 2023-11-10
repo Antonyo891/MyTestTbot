@@ -61,8 +61,7 @@ public class Toy implements Comparable<Toy> {
     @Override
     public boolean equals(Object o){
         Toy toy = (Toy) o;
-        return ((this.toyName.equalsIgnoreCase(toy.toyName))&&
-        (this.frequency==toy.frequency));
+        return ((this.toyName.equalsIgnoreCase(toy.toyName)));
     } 
 
     @Override

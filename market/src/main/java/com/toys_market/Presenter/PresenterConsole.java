@@ -1,31 +1,38 @@
 package com.toys_market.Presenter;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 import com.toys_market.Accessory.ToyParser;
 import com.toys_market.Accessory.ToysRandom;
+import com.toys_market.Exeption.ToyException;
+import com.toys_market.Exeption.ToyFrequencyException;
 import com.toys_market.Exeption.ToyParseException;
 import com.toys_market.FileWork.FileWork;
-import com.toys_market.FileWork.JsonFileWork;
+import com.toys_market.FileWork.JsShopFileWork;
+import com.toys_market.FileWork.JsWonFileWork;
 import com.toys_market.Shop.Toy;
 import com.toys_market.Shop.ToyController;
-import com.toys_market.View.ConsoleView;
+import com.toys_market.Shop.WonToyController;
 import com.toys_market.View.View;
 
 public class PresenterConsole {
     private View view;
     private ToyController toys;
-    private ToyController wonToys;
-    private FileWork fileWork;
+    private WonToyController wonToys;
+    private FileWork<ToyController> fileWorkShop;
+    private FileWork<WonToyController> fileWorkWon;
     private ToysRandom toysRandom;
 
 
-    public PresenterConsole(View view, FileWork fileWork, ToysRandom toysRandom) {
+    public PresenterConsole(View view, ToysRandom toysRandom) {
         this.view = view;
-        this.fileWork = fileWork;
         this.toysRandom = toysRandom;
+        fileWorkShop = new JsShopFileWork();
+        fileWorkWon = new JsWonFileWork();
         toys = new ToyController();
-        wonToys = new ToyController();
+        wonToys = new WonToyController();
     }
 
     public void CreateToy(){
@@ -34,33 +41,60 @@ public class PresenterConsole {
         while (true)
         try {
             Toy toy = new ToyParser().Parse(view.Get());
-            toys.AddToy(toy);
+            if (toys.AddToy(toy)){ 
+                view.Set("Add " +toy.getAmount() +" " + toy.getToyName() + ".");
+            } else view.Set(toy.getToyName() + " add  to the store.");
             break;
         } catch (ToyParseException e) {
-            view.Set("Re-enter (Name 35 2): ");
-        }        
+            view.Set(e.getMessage() + " Re-enter (Name frequency(0...100) amount(>0)): ");
+        } catch (ToyException e){
+            view.Set(e.getMessage() + " Re-enter (Name frequency(0...100) amount(>0)): ");
+        }
     }
 
     public void LoadToys(){
-        this.toys = fileWork.ReadFile("ToysInShop.json");
-        this.wonToys = fileWork.ReadFile("WonToys.json");
+        try {
+            this.toys = fileWorkShop.ReadFile("ToysInShop.json");
+            view.Set("Toys load in the shop");  
+        } catch (Exception e) {
+           view.Set(e.getMessage());
+        }
+        try {
+            this.wonToys = fileWorkWon.ReadFile("WonToys.json");
+            view.Set("Toys add to the wonList");     
+        } catch (Exception e) {
+            view.Set(e.getMessage());
+        }
     }
 
     public void SaveToys(){
-        fileWork.WriteFile("ToysInShop.json",toys);
-        fileWork.WriteFile("WonToys.json",toys);
+        try {
+            fileWorkShop.WriteFile("ToysInShop.json",toys);
+            view.Set("The stores toys were saved");
+        } catch (Exception e) {
+            view.Set(e.getMessage());
+        }
+        try {
+            fileWorkWon.WriteFile("WonToys.json",wonToys);
+            view.Set("The winList toys were saved");
+        } catch (Exception e) {
+            view.Set(e.getMessage());
+        }
+        
     }
 
     public void RemoveToy(){
         ArrayList<Integer> toyId = ShowToy();
         view.Set("Enter number of toy for remove this toy: ");
-        while (true) {
+        boolean stop = false;
+        while (!stop) {
             try {
                 Integer IdToRemove = toyId.get(Integer.parseInt(view.Get())-1);
                 this.toys.RemoveToy(IdToRemove);
-                break;
-            } catch (RuntimeException e) {
-                view.Set("Re-enter number of toy for remove ");
+                view.Set("Remove was completed");
+                stop=true;
+            } catch (NumberFormatException e) {
+                view.Set(e.getMessage() + " Re-enter number of toy for remove ");
             }  
         }
     }
@@ -71,6 +105,7 @@ public class PresenterConsole {
         for (Toy toy: this.toys.getToys()){
             view.Set(i + ".) " + toy.getToyName() + "\n");
             toyId.add(toy.getToyId());
+            i++;
         }
         return toyId;
     }
@@ -78,46 +113,71 @@ public class PresenterConsole {
     public void EditFrequencyToy(){
         ArrayList<Integer> toyId = ShowToy();
         view.Set("Enter number of toy for edit frequency: ");
+        Integer IdToEdit=null;
+        Integer newFrequency=null;
         while (true) {
             try {
-                Integer IdToRemove = toyId.get(Integer.parseInt(view.Get())-1);
-                Toy editToy = this.toys.SearchToy(IdToRemove);
+                IdToEdit = toyId.get(Integer.parseInt(view.Get())-1);
+                 break;}
+            catch (RuntimeException e) {
+                view.Set("Re-enter number of toy for remove ");
+            }} 
+            Toy editToy = this.toys.SearchToy(IdToEdit);
+            while (true){
                 view.Set(editToy.getToyName() + 
                     " have frequency = " + editToy.getFrequency() + ".");
-                view.Set("Enter new frequency");
+                view.Set("Enter new frequency(0..100)");
                 try {
-                    Integer newFrequency = Integer.parseInt(view.Get());
-                    editToy.setFrequency(newFrequency);
-                    this.toys.AddToy(editToy);
-                    this.toys.RemoveToy(IdToRemove);
-                    view.Set("The changes were completed correctly");
+                    newFrequency = Integer.parseInt(view.Get());
+                    if ((newFrequency<=0)||(newFrequency>=100))
+                        throw new ToyFrequencyException("Invalid frequency value - " +
+                        newFrequency + " of the " + editToy.getToyName() + " A value >" + 
+                " 0 and less than 100 is allowed \n",newFrequency);
                     break;
+                    }
+                catch(ToyFrequencyException e){
+                    view.Set(e.getMessage());
                 }
                 catch (RuntimeException e) {
                     view.Set("Frequency entered incorrectly");
                 } 
-            } catch (RuntimeException e) {
-                view.Set("Re-enter number of toy for remove ");
-            }  
-        }
-    }
+            }
+            editToy.setFrequency(newFrequency);
+            this.toys.RemoveToy(IdToEdit);
+            this.toys.AddToy(editToy);
+            view.Set("The changes were completed correctly");
+            }
 
     public void PlayToy(){
         view.Set("Lets go");
         Integer winId = this.toysRandom.GetRandom(toys.getToys());
-        Toy wonToy = this.toys.GetToy(winId);
-        wonToy.setAmount(1);
-        view.Set("You are win " + wonToy.getToyName() + ".");
-        this.wonToys.AddToy(wonToy);
-
+        Map<Toy,Boolean> result = this.toys.GetToy(winId);
+        Toy wonToy = null;
+        String name = null;
+        for (Toy item:result.keySet()){
+            name = item.getToyName();
+            Integer frequency = item.getFrequency();
+            wonToy = new Toy(1,frequency,name,1);
+            if (result.get(item))
+                view.Set("You win last " + name + " in the shop.");    
+        }
+        if (this.wonToys.AddToy(wonToy))
+            view.Set("You are win one more " + name + ".");
+        else view.Set("You are win " + name + ".");
     }
 
-    public ToyController getToys() {
-        return this.toys;
+    public PriorityQueue<Toy> getShopToys() {
+        PriorityQueue<Toy> toys = new PriorityQueue<>();
+        for (Toy item:this.toys.getToys())
+            toys.add(item);
+        return toys;
     }
 
-    public ToyController getWonToys() {
-        return this.wonToys;
+    public PriorityQueue<Toy> getWonToys() {
+        PriorityQueue<Toy> wontoys = new PriorityQueue<>();
+        for (Toy item:this.wonToys.getToys())
+           wontoys.add(item);
+        return wontoys;
     }
 
 }

@@ -1,1 +1,1 @@
-null
+{"wonToys":[{"toyId":4,"frequency":5,"amount":1,"toyName":"Totoro"},{"toyId":1,"frequency":30,"amount":3,"toyName":"Frog"},{"toyId":6,"frequency":10,"amount":1,"toyName":"Duck"},{"toyId":2,"frequency":50,"amount":3,"toyName":"Dog"},{"toyId":5,"frequency":50,"amount":1,"toyName":"Frog"},{"toyId":3,"frequency":100,"amount":9,"toyName":"Cat"}],"toys":[]}
